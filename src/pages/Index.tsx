@@ -1,12 +1,83 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import FeaturedPost from '../components/FeaturedPost';
+import BlogCard from '../components/BlogCard';
+import TagFilter from '../components/TagFilter';
+import { blogPosts, tags } from '../data/blog-data';
 
 const Index = () => {
+  // Get the most recent blog post for the featured section
+  const featuredPost = blogPosts[0];
+  // Get the rest of the posts for the grid
+  const recentPosts = blogPosts.slice(1);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="bg-blog-darker py-16">
+          <div className="content-container">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                <span className="text-blog-orange">Learn</span> What <span className="text-blog-teal">Matters</span> for CS Students
+              </h1>
+              <p className="text-xl text-gray-300 mb-8">
+                Master Data Structures, Algorithms, and Interview Preparation with our curated guides and practice materials.
+              </p>
+              <div className="inline-flex p-1 bg-gray-800 rounded-full">
+                <a href="#roadmaps" className="px-6 py-3 bg-blog-orange text-white rounded-full font-medium">DSA Roadmaps</a>
+                <a href="#practice" className="px-6 py-3 text-gray-300 hover:text-white rounded-full font-medium">Practice Questions</a>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Featured Post Section */}
+        <section className="py-12">
+          <div className="content-container">
+            <h2 className="text-2xl font-bold mb-6">Featured Article</h2>
+            <FeaturedPost post={featuredPost} />
+          </div>
+        </section>
+        
+        {/* Recent Posts Section */}
+        <section className="py-12">
+          <div className="content-container">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Recent Articles</h2>
+            </div>
+            
+            <TagFilter tags={tags} />
+            
+            <div className="blog-card-grid mt-8">
+              {recentPosts.map(post => (
+                <BlogCard key={post.id} post={post} />
+              ))}
+            </div>
+          </div>
+        </section>
+        
+        {/* CTA Section */}
+        <section className="py-16 bg-gradient-to-r from-blog-navy to-blog-darker">
+          <div className="content-container">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-4">Ready to Ace Your Technical Interviews?</h2>
+              <p className="text-xl text-gray-300 mb-8">
+                Start with our curated DSA sheets and interview preparation materials.
+              </p>
+              <a href="#" className="px-8 py-4 bg-blog-teal text-white rounded-full font-medium hover:bg-opacity-90 transition-colors">
+                Get Started
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <Footer />
     </div>
   );
 };

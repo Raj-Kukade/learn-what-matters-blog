@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom colors for our blog
+				blog: {
+					'dark': '#121212',
+					'darker': '#0a0a0a',
+					'navy': '#1e293b',
+					'orange': '#f97316',
+					'teal': '#0ea5e9',
 				}
 			},
 			borderRadius: {
@@ -89,6 +98,10 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+				heading: ['Space Grotesk', 'sans-serif'],
 			}
 		}
 	},
