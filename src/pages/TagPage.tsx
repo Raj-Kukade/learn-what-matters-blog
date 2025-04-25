@@ -20,13 +20,18 @@ const TagPage = () => {
     
     // Filter posts by tag
     if (slug) {
-      setFilteredPosts(
-        postsToUse.filter((post: BlogPost) => 
-          post.tags.some(tag => 
-            tag.toLowerCase().replace(/\s+/g, '-') === slug
-          )
+      const filtered = postsToUse.filter((post: BlogPost) => 
+        post.tags.some(tag => 
+          tag.toLowerCase().replace(/\s+/g, '-') === slug
         )
       );
+      
+      // Sort by date (newest first)
+      const sortedPosts = [...filtered].sort((a, b) => 
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+      
+      setFilteredPosts(sortedPosts);
     }
   }, [slug]);
 

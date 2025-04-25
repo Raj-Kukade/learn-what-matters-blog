@@ -1,12 +1,28 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BlogCard from '../components/BlogCard';
 import TagFilter from '../components/TagFilter';
 import { blogPosts, tags } from '../data/blog-data';
+import { BlogPost } from '../types/blog';
 
 const Index = () => {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    // Get posts from localStorage or use default
+    const storedPosts = localStorage.getItem('blogPosts');
+    const postsToUse = storedPosts ? JSON.parse(storedPosts) : blogPosts;
+    
+    // Sort posts by date (newest first)
+    const sortedPosts = [...postsToUse].sort((a, b) => 
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    );
+    
+    setPosts(sortedPosts);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -30,7 +46,7 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Resources Section (formerly Recent Posts) */}
+        {/* Resources Section */}
         <section className="py-12">
           <div className="content-container">
             <h2 className="text-2xl font-bold mb-6 text-center">Resources to Learn</h2>
@@ -38,9 +54,15 @@ const Index = () => {
             <TagFilter tags={tags} />
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-8">
-              {blogPosts.map(post => (
+              {posts.map(post => (
                 <BlogCard key={post.id} post={post} />
               ))}
+              
+              {posts.length === 0 && (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  No posts available.
+                </div>
+              )}
             </div>
           </div>
         </section>

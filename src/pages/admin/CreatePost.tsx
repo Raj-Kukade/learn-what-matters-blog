@@ -8,9 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/sonner';
 import { tags } from '@/data/blog-data';
-import { Check, X } from 'lucide-react';
+import { Check, Plus, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { BlogPost } from '@/types/blog';
+import { BlogPost, Tag } from '@/types/blog';
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -21,12 +21,21 @@ const CreatePost = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [readTime, setReadTime] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newTagName, setNewTagName] = useState('');
+  const [availableTags, setAvailableTags] = useState<Tag[]>(tags);
   
   // Check if admin is logged in
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
     if (!isLoggedIn) {
       navigate('/admin/login');
+    }
+    
+    // Load custom tags from localStorage if they exist
+    const customTagsJson = localStorage.getItem('customTags');
+    if (customTagsJson) {
+      const customTags = JSON.parse(customTagsJson);
+      setAvailableTags([...tags, ...customTags]);
     }
   }, [navigate]);
 
@@ -36,6 +45,43 @@ const CreatePost = () => {
     } else {
       setSelectedTags([...selectedTags, tagName]);
     }
+  };
+  
+  const handleAddCustomTag = () => {
+    if (!newTagName.trim()) {
+      toast.error("Tag name cannot be empty");
+      return;
+    }
+    
+    // Check if tag already exists
+    if (availableTags.some(t => t.name.toLowerCase() === newTagName.trim().toLowerCase())) {
+      toast.error("Tag already exists");
+      return;
+    }
+    
+    const newTag: Tag = {
+      id: `tag-${Date.now()}`,
+      name: newTagName.trim(),
+      slug: newTagName.trim().toLowerCase().replace(/\s+/g, '-')
+    };
+    
+    // Add to available tags
+    const updatedTags = [...availableTags, newTag];
+    setAvailableTags(updatedTags);
+    
+    // Save custom tags to localStorage (excluding the default tags)
+    const customTags = updatedTags.filter(
+      tag => !tags.some(defaultTag => defaultTag.id === tag.id)
+    );
+    localStorage.setItem('customTags', JSON.stringify(customTags));
+    
+    // Select the new tag
+    setSelectedTags([...selectedTags, newTag.name]);
+    
+    // Clear input
+    setNewTagName('');
+    
+    toast.success("New tag added");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -163,9 +209,27 @@ const CreatePost = () => {
                 </div>
                 
                 <div>
-                  <Label>Tags</Label>
+                  <div className="flex justify-between items-center mb-2">
+                    <Label>Tags</Label>
+                    <div className="flex items-center gap-2">
+                      <Input 
+                        value={newTagName}
+                        onChange={(e) => setNewTagName(e.target.value)}
+                        placeholder="Add custom tag"
+                        className="w-48"
+                      />
+                      <Button 
+                        type="button"
+                        size="sm"
+                        onClick={handleAddCustomTag}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        <Plus className="h-4 w-4 mr-1" /> Add
+                      </Button>
+                    </div>
+                  </div>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {tags.map((tag) => (
+                    {availableTags.map((tag) => (
                       <Badge
                         key={tag.id}
                         variant={selectedTags.includes(tag.name) ? "default" : "outline"}
