@@ -25,17 +25,17 @@ const BlogContent: React.FC<BlogContentProps> = ({ post }) => {
           ))}
         </div>
         
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">{post.title}</h1>
         
-        <p className="text-xl text-gray-300 mb-6">{post.description}</p>
+        <p className="text-xl text-gray-600 mb-6">{post.description}</p>
         
-        <div className="flex items-center justify-between text-gray-400 text-sm border-b border-gray-800 pb-6">
+        <div className="flex items-center justify-between text-gray-500 text-sm border-b border-gray-200 pb-6">
           <span>{formatDate(post.publishedAt)}</span>
           <span>{post.readTime} min read</span>
         </div>
       </header>
       
-      <div className="prose prose-lg prose-invert max-w-none">
+      <div className="prose prose-lg max-w-none text-gray-700">
         <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>
     </article>

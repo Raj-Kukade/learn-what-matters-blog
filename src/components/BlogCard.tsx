@@ -11,7 +11,7 @@ interface BlogCardProps {
 
 const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
   return (
-    <div className="bg-blog-navy rounded-lg overflow-hidden shadow-lg transition-transform hover:-translate-y-1 hover:shadow-xl">
+    <div className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform hover:-translate-y-1 hover:shadow-xl">
       <Link to={`/blog/${post.slug}`}>
         <div className="h-48 overflow-hidden">
           <img 
@@ -33,21 +33,21 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
             </Link>
           ))}
           {post.tags.length > 2 && (
-            <span className="blog-tag bg-gray-700">+{post.tags.length - 2}</span>
+            <span className="blog-tag bg-gray-100 text-gray-700">+{post.tags.length - 2}</span>
           )}
         </div>
         
         <Link to={`/blog/${post.slug}`}>
-          <h2 className="text-xl font-bold mb-2 line-clamp-2 hover:text-blog-teal transition-colors">
+          <h2 className="text-xl font-bold mb-2 line-clamp-2 hover:text-blue-500 transition-colors text-gray-800">
             {post.title}
           </h2>
         </Link>
         
-        <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
           {post.description}
         </p>
         
-        <div className="flex justify-between items-center text-gray-400 text-xs">
+        <div className="flex justify-between items-center text-gray-500 text-xs">
           <span>{formatDate(post.publishedAt)}</span>
           <span>{post.readTime} min read</span>
         </div>

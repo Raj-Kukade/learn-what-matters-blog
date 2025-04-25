@@ -10,7 +10,7 @@ interface FeaturedPostProps {
 
 const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-blog-navy rounded-lg overflow-hidden shadow-lg">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white rounded-lg overflow-hidden shadow-lg">
       <div className="h-full">
         <img 
           src={post.coverImage} 
@@ -32,16 +32,16 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
         </div>
         
         <Link to={`/blog/${post.slug}`}>
-          <h2 className="text-2xl md:text-3xl font-bold mb-3 hover:text-blog-teal transition-colors">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-800 hover:text-blue-500 transition-colors">
             {post.title}
           </h2>
         </Link>
         
-        <p className="text-gray-300 mb-6">
+        <p className="text-gray-600 mb-6">
           {post.description}
         </p>
         
-        <div className="flex justify-between items-center text-gray-400 text-sm mt-auto">
+        <div className="flex justify-between items-center text-gray-500 text-sm mt-auto">
           <span>{formatDate(post.publishedAt)}</span>
           <span>{post.readTime} min read</span>
         </div>

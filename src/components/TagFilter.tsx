@@ -17,7 +17,7 @@ const TagFilter: React.FC<TagFilterProps> = ({ tags, activeTag }) => {
           to="/" 
           className={cn(
             "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-            !activeTag ? "bg-blog-orange text-white" : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+            !activeTag ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           )}
         >
           All
@@ -29,7 +29,7 @@ const TagFilter: React.FC<TagFilterProps> = ({ tags, activeTag }) => {
             to={`/tags/${tag.slug}`}
             className={cn(
               "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-              activeTag === tag.slug ? "bg-blog-teal text-white" : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+              activeTag === tag.slug ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             )}
           >
             {tag.name}
