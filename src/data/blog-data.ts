@@ -416,7 +416,7 @@ export const blogPosts: BlogPost[] = [
       }
       
       Person.prototype.greet = function() {
-        return `Hello, I'm ${this.name}`;
+        return \`Hello, I'm \${this.name}\`;
       };
       
       const alice = new Person('Alice');
