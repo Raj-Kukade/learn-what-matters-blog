@@ -13,7 +13,7 @@ import { toast } from '@/components/ui/sonner';
 
 const AdminPosts = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<BlogPost[]>(blogPosts);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   
   // Check if admin is logged in
@@ -23,28 +23,52 @@ const AdminPosts = () => {
       navigate('/admin/login');
     }
   }, [navigate]);
+
+  // Initialize posts from localStorage or fallback to imported data
+  useEffect(() => {
+    const storedPosts = localStorage.getItem('blogPosts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    } else {
+      setPosts(blogPosts);
+      // Initialize localStorage with the default posts
+      localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
+    }
+  }, []);
   
   // Filter posts based on search term
   useEffect(() => {
+    const storedPosts = localStorage.getItem('blogPosts');
+    const allPosts = storedPosts ? JSON.parse(storedPosts) : blogPosts;
+    
     if (searchTerm) {
       setPosts(
-        blogPosts.filter((post) => 
+        allPosts.filter((post: BlogPost) => 
           post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           post.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+          post.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
         )
       );
     } else {
-      setPosts(blogPosts);
+      setPosts(allPosts);
     }
   }, [searchTerm]);
 
   const handleDelete = (postId: string) => {
-    // In a real app, this would be an API call
-    // For demo, we'll just show a toast
+    // Get current posts from localStorage
+    const storedPosts = localStorage.getItem('blogPosts');
+    const allPosts = storedPosts ? JSON.parse(storedPosts) : blogPosts;
+    
+    // Filter out the deleted post
+    const updatedPosts = allPosts.filter((post: BlogPost) => post.id !== postId);
+    
+    // Update localStorage
+    localStorage.setItem('blogPosts', JSON.stringify(updatedPosts));
+    
+    // Update state
+    setPosts(updatedPosts);
+    
     toast.success("Post deleted successfully!");
-    // Mock removal from local state
-    setPosts(posts.filter(post => post.id !== postId));
   };
 
   const handleEdit = (postSlug: string) => {
@@ -58,7 +82,7 @@ const AdminPosts = () => {
       <main className="flex-grow p-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <h1 className="text-2xl font-bold text-gray-800">Manage Posts</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Manage Posts ({posts.length})</h1>
             
             <div className="flex w-full sm:w-auto gap-2">
               <div className="relative flex-grow">

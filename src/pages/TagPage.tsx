@@ -1,50 +1,61 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BlogCard from '../components/BlogCard';
 import TagFilter from '../components/TagFilter';
-import { getPostsByTag, tags } from '../data/blog-data';
+import { blogPosts, tags } from '../data/blog-data';
+import { BlogPost } from '../types/blog';
 
 const TagPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
+  const currentTag = tags.find(tag => tag.slug === slug);
   
-  // Get posts for the current tag
-  const posts = slug ? getPostsByTag(
-    // Convert slug to tag name (e.g., "data-structures" -> "Data Structures")
-    tags.find(t => t.slug === slug)?.name || ""
-  ) : [];
-  
-  // Get the tag name for display
-  const tagName = tags.find(t => t.slug === slug)?.name || "";
-  
+  useEffect(() => {
+    // Get posts from localStorage or use default
+    const storedPosts = localStorage.getItem('blogPosts');
+    const postsToUse = storedPosts ? JSON.parse(storedPosts) : blogPosts;
+    
+    // Filter posts by tag
+    if (slug) {
+      setFilteredPosts(
+        postsToUse.filter((post: BlogPost) => 
+          post.tags.some(tag => 
+            tag.toLowerCase().replace(/\s+/g, '-') === slug
+          )
+        )
+      );
+    }
+  }, [slug]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <main className="flex-grow py-12">
-        <div className="content-container">
-          <h1 className="text-3xl font-bold mb-6">
-            {tagName} <span className="text-gray-400">Articles</span>
-          </h1>
-          
-          <TagFilter tags={tags} activeTag={slug} />
-          
-          {posts.length > 0 ? (
-            <div className="blog-card-grid mt-8">
-              {posts.map(post => (
+      <main className="flex-grow">
+        <section className="py-12">
+          <div className="content-container">
+            <h1 className="text-3xl font-bold mb-6 text-center">
+              {currentTag ? currentTag.name : 'Tag'} Resources
+            </h1>
+            
+            <TagFilter tags={tags} activeTag={slug} />
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-8">
+              {filteredPosts.map(post => (
                 <BlogCard key={post.id} post={post} />
               ))}
+              
+              {filteredPosts.length === 0 && (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  No posts found for this tag.
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <h2 className="text-2xl font-medium text-gray-400">
-                No articles found for this tag.
-              </h2>
-            </div>
-          )}
-        </div>
+          </div>
+        </section>
       </main>
       
       <Footer />

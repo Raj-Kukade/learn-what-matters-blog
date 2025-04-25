@@ -10,6 +10,7 @@ import { toast } from '@/components/ui/sonner';
 import { tags } from '@/data/blog-data';
 import { Check, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { BlogPost } from '@/types/blog';
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -52,7 +53,29 @@ const CreatePost = () => {
     
     setIsSubmitting(true);
     
-    // In a real application, this would be an API call to your backend
+    // Create a new post object
+    const newPost: BlogPost = {
+      id: `post-${Date.now()}`,
+      title,
+      slug: title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-'),
+      description,
+      content,
+      coverImage,
+      tags: selectedTags,
+      publishedAt: new Date().toISOString(),
+      readTime: readTime
+    };
+    
+    // Get existing posts from localStorage or use the default ones
+    const existingPostsJson = localStorage.getItem('blogPosts');
+    const existingPosts = existingPostsJson ? JSON.parse(existingPostsJson) : [];
+    
+    // Add new post to the beginning of the array
+    const updatedPosts = [newPost, ...existingPosts];
+    
+    // Save to localStorage
+    localStorage.setItem('blogPosts', JSON.stringify(updatedPosts));
+    
     setTimeout(() => {
       toast.success("Post created successfully!");
       setIsSubmitting(false);

@@ -1,20 +1,32 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminNavbar from '@/components/admin/AdminNavbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import { blogPosts, tags } from '@/data/blog-data';
+import { BlogPost } from '@/types/blog';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   
   // Check if admin is logged in
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
     if (!isLoggedIn) {
       navigate('/admin/login');
+    }
+    
+    // Get posts from localStorage or use default
+    const storedPosts = localStorage.getItem('blogPosts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    } else {
+      setPosts(blogPosts);
+      // Initialize localStorage with the default posts if not yet set
+      localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
     }
   }, [navigate]);
 
@@ -40,7 +52,7 @@ const AdminDashboard = () => {
                 <CardTitle>Total Posts</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold">{blogPosts.length}</p>
+                <p className="text-3xl font-bold">{posts.length}</p>
               </CardContent>
             </Card>
             
@@ -59,7 +71,7 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {blogPosts.slice(0, 3).map((post) => (
+                  {posts.slice(0, 3).map((post) => (
                     <li key={post.id} className="text-sm text-gray-600">{post.title}</li>
                   ))}
                 </ul>

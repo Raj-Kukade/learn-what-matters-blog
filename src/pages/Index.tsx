@@ -2,17 +2,11 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import FeaturedPost from '../components/FeaturedPost';
 import BlogCard from '../components/BlogCard';
 import TagFilter from '../components/TagFilter';
 import { blogPosts, tags } from '../data/blog-data';
 
 const Index = () => {
-  // Get the most recent blog post for the featured section
-  const featuredPost = blogPosts[0];
-  // Get the rest of the posts for the grid
-  const recentPosts = blogPosts.slice(1);
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -36,25 +30,15 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Featured Post Section */}
+        {/* Resources Section (formerly Recent Posts) */}
         <section className="py-12">
           <div className="content-container">
-            <h2 className="text-2xl font-bold mb-6">Featured Article</h2>
-            <FeaturedPost post={featuredPost} />
-          </div>
-        </section>
-        
-        {/* Recent Posts Section */}
-        <section className="py-12">
-          <div className="content-container">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Recent Articles</h2>
-            </div>
+            <h2 className="text-2xl font-bold mb-6 text-center">Resources to Learn</h2>
             
             <TagFilter tags={tags} />
             
-            <div className="blog-card-grid mt-8">
-              {recentPosts.map(post => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-8">
+              {blogPosts.map(post => (
                 <BlogCard key={post.id} post={post} />
               ))}
             </div>
